@@ -10,6 +10,7 @@ tbl.addEventListener('click', (e) => {
     let selectedEventId = row.children[0].innerHTML;
 
     clearBackgroundColor(tbl);
+    showAddButton();
 
     if (row.rowIndex > 0) {
         row.className = "yellow";
@@ -18,6 +19,10 @@ tbl.addEventListener('click', (e) => {
     }
 
 });
+
+document.getElementById('btn-add-equip').addEventListener('click', () => {
+    document.getElementById('div-booking-equip').classList.remove("d-none");
+})
 
 
 function loadEvents() {
@@ -76,6 +81,10 @@ function clearBackgroundColor(tbl) {
     for (let i = 0; i < rows.length; i++) {
         rows[i].classList.remove("yellow");
     }
+}
+
+function showAddButton() {
+    document.getElementById('btn-add-equip').classList.remove("d-none");
 }
 
 function loadEventEquip(id) {

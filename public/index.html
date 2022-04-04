@@ -53,11 +53,52 @@
       </table>
     </div>
 
-<br><br><br>
+    <br><br><br>
 
     <div class="d-none" id="div-equip-table">
-      <h4>Список оборудования</h4>
+      <h4>Список выбранного оборудования</h4>
       <table class="table table-hover table-striped" id="equip-table">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">Наименование</th>
+            <th scope="col">id<br>мероприятия</th>
+            <th scope="col">Кол-во<br>всего</th>
+            <th scope="col">В наличии<br>на складе</th>
+            <th scope="col">Выбрано</th>
+            <th scope="col">Начало</th>
+            <th scope="col">Окончание</th>
+          </tr>
+        </thead>
+        <tbody id="equip-table-body">
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td colspan="2">Larry the Bird</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="d-none btn btn-outline-success" id="btn-add-equip">Добавить оборудование</button>
+
+    <br><br><br>
+
+    <div class="d-none" id="div-booking-equip">
+      <h4>Выбор оборудования</h4>
+      <table class="table table-hover table-striped" id="booking-equip-table">
         <thead>
           <tr>
             <th scope="col">id</th>
