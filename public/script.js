@@ -16,12 +16,16 @@ tbl.addEventListener('click', (e) => {
         row.className = "yellow";
 
         loadEventEquip(selectedEventId);
+    } else {
+        document.getElementById('div-booking-equip').classList.add("d-none");
+        document.getElementById('btn-add-equip').classList.add("d-none");
     }
 
 });
 
 document.getElementById('btn-add-equip').addEventListener('click', () => {
     document.getElementById('div-booking-equip').classList.remove("d-none");
+    loadEquipment();
 })
 
 
@@ -88,35 +92,35 @@ function showAddButton() {
 }
 
 function loadEventEquip(id) {
-    console.log(id);
-        let data = {};
-        data.id = id;
-        fetch('/events', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+    let tbl = document.getElementById('equip-table');
+    let tblBody = document.getElementById('equip-table-body');
+    // console.log(id);
+    let data = {};
+    data.id = id;
+    fetch('/events', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(data => {
+            fillEquipTable(data, tbl, tblBody)
+            // console.log("data:", data);
         })
-            .then(res => res.json())
-            .then(data => {
-                fillEquipTable(data)
-                // console.log("data:", data);
-            })
-            // .then(refresh)
-            .catch(error => {
-                // enter your logic for when there is an error (ex. error toast)
-                console.log(error)
-            })
+        // .then(refresh)
+        .catch(error => {
+            // enter your logic for when there is an error (ex. error toast)
+            console.log(error)
+        })
 
 }
 
 
-function fillEquipTable(equip) {
+function fillEquipTable(equip, tbl, tblBody) {
     console.log("fillEquipTable", equip);
 
-    let tbl = document.getElementById('equip-table');
-    let tblBody = document.getElementById('equip-table-body');
     tblBody.innerHTML = "";
     for (let i = 0; i < equip.length; i++) {
 
@@ -131,29 +135,39 @@ function fillEquipTable(equip) {
         row.appendChild(cell);
 
         cell = document.createElement("td");
-        cell.innerHTML = equip[i].event_id;            
+        cell.innerHTML = equip[i].event_id;
         row.appendChild(cell);
 
         cell = document.createElement("td");
-        cell.innerHTML = equip[i].storage_qty;            
+        cell.innerHTML = equip[i].storage_qty;
         row.appendChild(cell);
 
         cell = document.createElement("td");
-        cell.innerHTML = equip[i].result_qty;            
+        cell.innerHTML = equip[i].result_qty;
         row.appendChild(cell);
 
         cell = document.createElement("td");
-        cell.innerHTML = equip[i].selected_qty;            
+        cell.innerHTML = equip[i].selected_qty;
         row.appendChild(cell);
 
         cell = document.createElement("td");
-        let eventStartDate = equip[i].event_start.slice(0, 10);
-        cell.innerHTML = eventStartDate;
+        if (equip[i].event_start !== null) {
+            let eventStartDate = equip[i].event_start.slice(0, 10);
+            cell.innerHTML = eventStartDate;
+        }else {
+            cell.innerHTML = "";
+        }
+
         row.appendChild(cell);
 
+
         cell = document.createElement("td");
-        let eventEndDate = equip[i].event_end.slice(0, 10);
-        cell.innerHTML = eventEndDate;
+        if (equip[i].event_end !== null) {
+            let eventEndDate = equip[i].event_end.slice(0, 10);
+            cell.innerHTML = eventEndDate;
+        }else {
+            cell.innerHTML = "";
+        }
         row.appendChild(cell);
 
         tblBody.appendChild(row);
@@ -161,4 +175,26 @@ function fillEquipTable(equip) {
     tbl.append(tblBody);
 
     document.getElementById('div-equip-table').classList.remove("d-none");
+}
+
+function loadEquipment() {
+    let tbl = document.getElementById('booking-equip-table');
+    let tblBody = document.getElementById('booking-equip-table-body');
+    fetch('/equipment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: ""
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log("data:", data);
+            fillEquipTable(data, tbl, tblBody)            
+        })
+        // .then(refresh)
+        .catch(error => {
+            // enter your logic for when there is an error (ex. error toast)
+            console.log(error)
+        })
 }

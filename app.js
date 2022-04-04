@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 
 let eventsObj = {};
 let equipObj = {};
+let fullEquipObj = {};
 
 // создаем парсер для данных application/x-www-form-urlencoded
 const urlencodedParser = express.urlencoded({ extended: false });
@@ -32,9 +33,21 @@ app.get("/events", function (request, response) {
 app.post("/events", urlencodedParser, function (request, response) {
   if (!request.body) return response.sendStatus(400);
   console.log("update.request.body", request.body);
-  return readEquipment(request.body, response);
+  return readEventEquipment(request.body, response);
   // response.send(request.body);
 });
+
+//  READ Equipment
+// --------------------------------------------------------------------
+app.post("/equipment", urlencodedParser, function (request, response) {
+  if (!request.body) return response.sendStatus(400);
+  return readEquipment(response);
+  // response.send(request.body);
+});
+
+
+
+
 
 
 //  READ events function
@@ -55,9 +68,9 @@ function readEvents(response) {
     });
 }
 
-//  READ Equipment function
+//  READ eventEquipment function
 // --------------------------------------------------------------------
-function readEquipment(data, response) {
+function readEventEquipment(data, response) {
   connection = mysql.createConnection(config);
   console.log("data.id", data.id);
   // execute will internally call prepare and query
@@ -69,6 +82,24 @@ function readEquipment(data, response) {
       equipObj = results
       console.log(equipObj); // results contains rows returned by server
       response.send(equipObj);
+      connection.end();
+    }
+  )
+}
+
+//  READ Equipment function
+// --------------------------------------------------------------------
+function readEquipment(response) {
+  connection = mysql.createConnection(config);
+  connection.execute("SELECT * FROM v_result_5",
+    function (err, results, fields) {
+      if (err) {
+        console.log('Check SSH tunnel!')
+        return console.log("Error: " + err.message);
+      }
+      fullEquipObj = results
+      console.log(fullEquipObj); // results contains rows returned by server
+      response.send(fullEquipObj);
       connection.end();
     }
   )
