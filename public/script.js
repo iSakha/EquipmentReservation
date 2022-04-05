@@ -2,12 +2,13 @@ document.addEventListener("DOMContentLoaded", loadEvents);
 let eventObj = {};
 let equipObj = {};
 let tbl = document.getElementById('events-table');
-
 tbl.addEventListener('click', (e) => {
     // console.log(e.target);
     let td = e.target;
     let row = td.parentNode;
     let selectedEventId = row.children[0].innerHTML;
+    let start = row.children[3].innerHTML;
+    let end = row.children[4].innerHTML;
 
     clearBackgroundColor(tbl);
     showAddButton();
@@ -16,6 +17,7 @@ tbl.addEventListener('click', (e) => {
         row.className = "yellow";
 
         loadEventEquip(selectedEventId);
+        setDate(start, end);
     } else {
         document.getElementById('div-booking-equip').classList.add("d-none");
         document.getElementById('btn-add-equip').classList.add("d-none");
@@ -23,9 +25,28 @@ tbl.addEventListener('click', (e) => {
 
 });
 
+function setDate(start, end) {
+    document.getElementById('start').value = start;
+    document.getElementById('end').value = end;
+}
+
 document.getElementById('btn-add-equip').addEventListener('click', () => {
     document.getElementById('div-booking-equip').classList.remove("d-none");
-    loadEquipment();
+    let start = document.getElementById('start').value;
+    let end = document.getElementById('end').value;
+    loadEquipment(start, end);
+})
+
+let tblEquip = document.getElementById('booking-equip-table');
+tblEquip.addEventListener('click', (e) => {
+    let td = e.target;
+    let row = td.parentNode;
+    let selectedFixture = row.children[0].innerHTML;
+    console.log(selectedFixture);
+
+    document.getElementById('lbl-fxtName').innerHTML = row.children[1].innerHTML;
+    document.getElementById('lbl-storage-qty').innerHTML = row.children[3].innerHTML;
+    document.getElementById('lbl-available-qty').innerHTML = row.children[4].innerHTML;
 })
 
 
@@ -177,15 +198,20 @@ function fillEquipTable(equip, tbl, tblBody) {
     document.getElementById('div-equip-table').classList.remove("d-none");
 }
 
-function loadEquipment() {
+function loadEquipment(start, end) {
     let tbl = document.getElementById('booking-equip-table');
     let tblBody = document.getElementById('booking-equip-table-body');
+    let interval = {};
+    interval.start = start;
+    interval.end = end;
+
+    let data = JSON.stringify(interval);
     fetch('/equipment', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: ""
+        body: data
     })
         .then(res => res.json())
         .then(data => {

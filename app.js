@@ -41,7 +41,8 @@ app.post("/events", urlencodedParser, function (request, response) {
 // --------------------------------------------------------------------
 app.post("/equipment", urlencodedParser, function (request, response) {
   if (!request.body) return response.sendStatus(400);
-  return readEquipment(response);
+  console.log("request.body", request.body);
+  return readEquipment(request.body, response);
   // response.send(request.body);
 });
 
@@ -89,7 +90,7 @@ function readEventEquipment(data, response) {
 
 //  READ Equipment function
 // --------------------------------------------------------------------
-function readEquipment(response) {
+function readEquipment(interval, response) {
   connection = mysql.createConnection(config);
   connection.execute("SELECT * FROM v_result_5",
     function (err, results, fields) {

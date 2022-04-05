@@ -91,14 +91,58 @@
         </tbody>
       </table>
     </div>
+    <br>
+    <div class="row">
+      <div class="col-3">
+        <button class="d-none btn btn-outline-success" id="btn-add-equip">Добавить оборудование</button>
+      </div>
+      <div class="col-2">
+        <label for="start">Start:&nbsp&nbsp</label>
+        <input type="date" id="start">
+      </div>
+      <div class="col-2">
+        <label for="end">End:&nbsp&nbsp</label>
+        <input type="date" id="end">
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-3">
+        <label id=""><h6>Наименование</h6></label>
+      </div>
+      <div class="col-2">
+        <label id=""><h6>Всего</h6></label>
+      </div>
+      <div class="col-2">
+        <label id=""><h6>Доступно</h6></label>
+      </div>
+      <div class="col-2">
+        <label id=""><h6>Берем</h6></label>
+      </div>
+    </div>
 
-    <button class="d-none btn btn-outline-success" id="btn-add-equip">Добавить оборудование</button>
+    <div class="row">
+      <div class="col-3">
+        <label id="lbl-fxtName"></label>
+      </div>
+      <div class="col-2">
+        <label id="lbl-storage-qty"></label>
+      </div>
+      <div class="col-2">
+        <label id="lbl-available-qty"></label>
+      </div>
+      <div class="col-2">
+        <input type="text" id="txt-take-qty">
+      </div>
+    </div>
+
 
     <br><br><br>
 
     <div class="d-none" id="div-booking-equip">
       <h4>Выбор оборудования</h4>
-      <table class="table table-hover table-striped" id="booking-equip-table">
+      <table class="table table-hover table-striped table-wrapper-scroll-y my-custom-scrollbar"
+        id="booking-equip-table">
         <thead>
           <tr>
             <th scope="col">id</th>
