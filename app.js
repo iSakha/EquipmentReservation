@@ -46,7 +46,14 @@ app.post("/equipment", urlencodedParser, function (request, response) {
   // response.send(request.body);
 });
 
-
+//  ADD Equipment to the Event
+// --------------------------------------------------------------------
+app.put("/events", urlencodedParser, function (request, response) {
+  if (!request.body) return response.sendStatus(400);
+  console.log("request.body", request.body);
+  // return readEquipment(request.body, response);
+  response.send(request.body);
+});
 
 
 
