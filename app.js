@@ -92,13 +92,14 @@ function readEventEquipment(data, response) {
 // --------------------------------------------------------------------
 function readEquipment(interval, response) {
   connection = mysql.createConnection(config);
-  connection.execute("SELECT * FROM v_result_5",
+  connection.execute("CALL equip_selection(?,?)",
+  [interval.start, interval.end],
     function (err, results, fields) {
       if (err) {
         console.log('Check SSH tunnel!')
         return console.log("Error: " + err.message);
       }
-      fullEquipObj = results
+      fullEquipObj = results[0];
       console.log(fullEquipObj); // results contains rows returned by server
       response.send(fullEquipObj);
       connection.end();
