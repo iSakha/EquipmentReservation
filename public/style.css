@@ -1,4 +1,4 @@
-.yellow{
+.yellow {
     background-color: yellow;
 }
 
@@ -6,7 +6,19 @@
     position: relative;
     height: 600px;
     overflow: auto;
-    }
-    .table-wrapper-scroll-y {
+}
+
+.table-wrapper-scroll-y {
     display: block;
-    }
+}
+
+#event-name {
+    background-color:bisque;
+}
+
+#txt-take-qty{
+    background-color:rgb(202, 243, 161); 
+    width: 80px; 
+    margin-top: 5px; 
+}
+

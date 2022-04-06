@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", loadEvents);
 let eventObj = {};
 let equipObj = {};
 let tbl = document.getElementById('events-table');
+
+//  Click Event table
+// ======================================================================
 tbl.addEventListener('click', (e) => {
     // console.log(e.target);
     let td = e.target;
@@ -13,6 +16,11 @@ tbl.addEventListener('click', (e) => {
     clearBackgroundColor(tbl);
     showAddButton();
 
+    document.getElementById('event-name').innerHTML = row.children[2].innerHTML;
+    document.getElementById('event-id').innerHTML = selectedEventId;
+
+    document.querySelectorAll('.row')[0].classList.remove("d-none");
+
     if (row.rowIndex > 0) {
         row.className = "yellow";
 
@@ -21,6 +29,9 @@ tbl.addEventListener('click', (e) => {
     } else {
         document.getElementById('div-booking-equip').classList.add("d-none");
         document.getElementById('btn-add-equip').classList.add("d-none");
+        document.querySelectorAll('.row')[0].classList.add("d-none");
+        document.querySelectorAll('.row')[1].classList.add("d-none");
+        document.querySelectorAll('.row')[2].classList.add("d-none");
     }
 
 });
@@ -30,13 +41,18 @@ function setDate(start, end) {
     document.getElementById('end').value = end;
 }
 
+//  Click Button "Add equipment"
+// ======================================================================
 document.getElementById('btn-add-equip').addEventListener('click', () => {
     document.getElementById('div-booking-equip').classList.remove("d-none");
     let start = document.getElementById('start').value;
     let end = document.getElementById('end').value;
     loadEquipment(start, end);
+
 })
 
+//  Click Equipment table
+// ======================================================================
 let tblEquip = document.getElementById('booking-equip-table');
 tblEquip.addEventListener('click', (e) => {
     let td = e.target;
@@ -47,8 +63,44 @@ tblEquip.addEventListener('click', (e) => {
     document.getElementById('lbl-fxtName').innerHTML = row.children[1].innerHTML;
     document.getElementById('lbl-storage-qty').innerHTML = row.children[3].innerHTML;
     document.getElementById('lbl-available-qty').innerHTML = row.children[4].innerHTML;
+    document.getElementById('lbl-fxt-id').innerHTML = row.children[0].innerHTML;
+
+    document.querySelectorAll('.row')[1].classList.remove("d-none");
+    document.querySelectorAll('.row')[2].classList.remove("d-none");
 })
 
+//  Click Button "OK"
+// ======================================================================
+document.getElementById('btn-ok').addEventListener('click', () => {
+    let fxt_qty = document.getElementById('txt-take-qty').value;
+    let event_id = document.getElementById('event-id').innerHTML;
+    let fxt_id = document.getElementById('lbl-fxt-id').innerHTML;
+    let fxtObj = {};
+    fxtObj.event_id = event_id;
+    fxtObj.fxt_id = fxt_id;
+    fxtObj.fxt_qty = fxt_qty;
+    // console.log(fxtObj);
+
+    fetch('/events', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fxtObj)
+    })
+        .then(res => res.json())
+        .then(data => {
+            // fillEquipTable(data, tbl, tblBody)
+            console.log("data:", data);
+        })
+        // .then(refresh)
+        .catch(error => {
+            // enter your logic for when there is an error (ex. error toast)
+            console.log(error)
+        })
+
+
+})
 
 function loadEvents() {
     fetch('/events')

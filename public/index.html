@@ -62,7 +62,7 @@
           <tr>
             <th scope="col">id</th>
             <th scope="col">Наименование</th>
-            <!-- <th scope="col">id<br>мероприятия</th> -->
+            <th scope="col">id<br>мероприятия</th>
             <th scope="col">Кол-во<br>всего</th>
             <th scope="col">В наличии<br>на складе</th>
             <th scope="col">Выбрано</th>
@@ -92,7 +92,7 @@
       </table>
     </div>
     <br>
-    <div class="row">
+    <div class="row d-none">
       <div class="col-3">
         <button class="d-none btn btn-outline-success" id="btn-add-equip">Добавить оборудование</button>
       </div>
@@ -104,24 +104,38 @@
         <label for="end">End:&nbsp&nbsp</label>
         <input type="date" id="end">
       </div>
+      <div class="col-3">
+        <h6 id="event-name"></h6>
+      </div>
+      <div class="col-2">
+        <h6 id="event-id"></h6>
+      </div>
     </div>
     <br>
-    <div class="row">
+    <div class="row d-none">
       <div class="col-3">
-        <label id=""><h6>Наименование</h6></label>
+        <label id="">
+          <h6>Наименование</h6>
+        </label>
       </div>
       <div class="col-2">
-        <label id=""><h6>Всего</h6></label>
+        <label id="">
+          <h6>Всего</h6>
+        </label>
       </div>
       <div class="col-2">
-        <label id=""><h6>Доступно</h6></label>
+        <label id="">
+          <h6>Доступно</h6>
+        </label>
       </div>
       <div class="col-2">
-        <label id=""><h6>Берем</h6></label>
+        <label id="">
+          <h6>Берем</h6>
+        </label>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row d-none">
       <div class="col-3">
         <label id="lbl-fxtName"></label>
       </div>
@@ -131,8 +145,14 @@
       <div class="col-2">
         <label id="lbl-available-qty"></label>
       </div>
-      <div class="col-2">
+      <div class="col-1">
         <input type="text" id="txt-take-qty">
+      </div>
+      <div class="col-2">
+        <button id="btn-ok" class="btn btn-success">OK</button>
+      </div>
+      <div class="col-2">
+        <label id="lbl-fxt-id"></label>
       </div>
     </div>
 
