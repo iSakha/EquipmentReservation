@@ -51,8 +51,8 @@ app.post("/equipment", urlencodedParser, function (request, response) {
 app.put("/events", urlencodedParser, function (request, response) {
   if (!request.body) return response.sendStatus(400);
   console.log("request.body", request.body);
-  // return readEquipment(request.body, response);
-  response.send(request.body);
+  return addEquipmentToEvent(request.body, response);
+  // response.send(request.body);
 });
 
 
@@ -80,7 +80,7 @@ function readEvents(response) {
 // --------------------------------------------------------------------
 function readEventEquipment(data, response) {
   connection = mysql.createConnection(config);
-  console.log("data.id", data.id);
+  // console.log("data.id", data.id);
   // execute will internally call prepare and query
   connection.execute(
     "SELECT * FROM `v_result_2` WHERE `event_id` = ?",
@@ -114,7 +114,18 @@ function readEquipment(interval, response) {
   )
 }
 
-
+//  ADD Equipment to the Event function
+// --------------------------------------------------------------------
+function addEquipmentToEvent(data, response) {
+  connection = mysql.createConnection(config);
+  let dataArray = [data.fxt_id, data.event_id, data.fxt_qty];
+  const sql = "INSERT INTO selected_fixtures(id_fxt, id_event, qty) VALUES(?, ?, ?)";
+  connection.query(sql, dataArray, function (err, results) {
+    if (err) return console.log(err);
+});
+  response.send(data);
+  connection.end();
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
