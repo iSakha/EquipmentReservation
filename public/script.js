@@ -46,13 +46,13 @@ function setDate(start, end) {
 
 //  Click Button "Add equipment"
 // ======================================================================
-document.getElementById('btn-add-equip').addEventListener('click', () => {
-    document.getElementById('div-booking-equip').classList.remove("d-none");
-    let start = document.getElementById('start').value;
-    let end = document.getElementById('end').value;
-    loadEquipment(start, end);
-console.log('btn-add-equip');
-})
+// document.getElementById('btn-add-equip').addEventListener('click', () => {
+//     document.getElementById('div-booking-equip').classList.remove("d-none");
+//     let start = document.getElementById('start').value;
+//     let end = document.getElementById('end').value;
+//     loadEquipment(start, end);
+// console.log('btn-add-equip');
+// })
 
 //  Click Equipment table
 // ======================================================================
@@ -62,16 +62,39 @@ tblEquip.addEventListener('click', (e) => {
     // console.log(e.target.className);
     if (e.target.className == "txt-to-take") {
 
+        let td = e.target.parentNode;
+        let tr = td.parentNode;
+        let txt = e.target;
+        let old_value = txt.value;
+        let new_value;
+        let fxt_id = tr.children[0].innerHTML;
+        console.log(fxt_id);
+        console.log('old_value', old_value);
+        e.target.addEventListener('keydown', (e) => {
+            if (e.keyCode == 13) {
+                new_value = txt.value;
+                console.log('new', new_value);
+                if (old_value !== new_value) {
+                    tr.classList.add('pink');
+                }
+
+            }
+
+
+        })
+
+
+
     } else if (e.target.className == "equip-tbl-cell") {
         let td = e.target;
         let row = td.parentNode;
         let selectedFixture = row.children[0].innerHTML;
         console.log(selectedFixture);
 
-        document.getElementById('lbl-fxtName').innerHTML = row.children[1].innerHTML;
-        document.getElementById('lbl-storage-qty').innerHTML = row.children[3].innerHTML;
-        document.getElementById('lbl-available-qty').innerHTML = row.children[4].innerHTML;
-        document.getElementById('lbl-fxt-id').innerHTML = row.children[0].innerHTML;
+        // document.getElementById('lbl-fxtName').innerHTML = row.children[1].innerHTML;
+        // document.getElementById('lbl-storage-qty').innerHTML = row.children[3].innerHTML;
+        // document.getElementById('lbl-available-qty').innerHTML = row.children[4].innerHTML;
+        // document.getElementById('lbl-fxt-id').innerHTML = row.children[0].innerHTML;
 
         // document.querySelectorAll('.row')[1].classList.remove("d-none");
         // document.querySelectorAll('.row')[2].classList.remove("d-none");

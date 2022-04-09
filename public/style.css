@@ -2,6 +2,10 @@
     background-color: yellow;
 }
 
+.pink {
+    background-color: pink;
+}
+
 .my-custom-scrollbar {
     position: relative;
     height: 600px;
