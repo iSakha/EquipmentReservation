@@ -27,12 +27,14 @@ tbl.addEventListener('click', (e) => {
 
         loadEventEquip(selectedEventId);
         setDate(start, end);
+
     } else {
         document.getElementById('div-booking-equip').classList.add("d-none");
         document.getElementById('btn-add-equip').classList.add("d-none");
         document.querySelectorAll('.row')[0].classList.add("d-none");
         document.querySelectorAll('.row')[1].classList.add("d-none");
         document.querySelectorAll('.row')[2].classList.add("d-none");
+
     }
 
 });
@@ -49,7 +51,7 @@ document.getElementById('btn-add-equip').addEventListener('click', () => {
     let start = document.getElementById('start').value;
     let end = document.getElementById('end').value;
     loadEquipment(start, end);
-
+console.log('btn-add-equip');
 })
 
 //  Click Equipment table
@@ -71,11 +73,10 @@ tblEquip.addEventListener('click', (e) => {
         document.getElementById('lbl-available-qty').innerHTML = row.children[4].innerHTML;
         document.getElementById('lbl-fxt-id').innerHTML = row.children[0].innerHTML;
 
-        document.querySelectorAll('.row')[1].classList.remove("d-none");
-        document.querySelectorAll('.row')[2].classList.remove("d-none");
+        // document.querySelectorAll('.row')[1].classList.remove("d-none");
+        // document.querySelectorAll('.row')[2].classList.remove("d-none");
+
     }
-
-
 
 })
 
@@ -112,6 +113,15 @@ document.getElementById('btn-ok').addEventListener('click', () => {
 
 
 })
+
+function getSelectedEventEquip() {
+
+    document.getElementById('div-booking-equip').classList.remove("d-none");
+    let start = document.getElementById('start').value;
+    let end = document.getElementById('end').value;
+    loadEquipment(start, end);
+
+}
 
 function loadEvents() {
     fetch('/events')
@@ -194,7 +204,7 @@ function loadEventEquip(id) {
             eventEquipObj = data;
             console.log("data:", data);
         })
-        // .then(refresh)
+        .then(getSelectedEventEquip)
         .catch(error => {
             // enter your logic for when there is an error (ex. error toast)
             console.log(error)
@@ -393,11 +403,11 @@ function loadEquipment(start, end) {
 }
 
 function getEventEquip(id) {
-    console.log(id);
+    // console.log(id);
     let qty = 0;
     for (let i = 0; i < eventEquipArr.length; i++) {
         if (eventEquipArr[i].fixture_id === id) {
-            console.log(eventEquipArr[i].selected_qty);
+            // console.log(eventEquipArr[i].selected_qty);
             qty = eventEquipArr[i].selected_qty;
         }
     }
