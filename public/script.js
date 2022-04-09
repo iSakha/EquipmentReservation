@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", loadEvents);
 let eventObj = {};
 let equipObj = {};
-let eventEquipObj = {};
+let eventEquipArr = [];
 let tbl = document.getElementById('events-table');
 
 //  Click Event table
@@ -56,18 +56,27 @@ document.getElementById('btn-add-equip').addEventListener('click', () => {
 // ======================================================================
 let tblEquip = document.getElementById('booking-equip-table');
 tblEquip.addEventListener('click', (e) => {
-    let td = e.target;
-    let row = td.parentNode;
-    let selectedFixture = row.children[0].innerHTML;
-    console.log(selectedFixture);
 
-    document.getElementById('lbl-fxtName').innerHTML = row.children[1].innerHTML;
-    document.getElementById('lbl-storage-qty').innerHTML = row.children[3].innerHTML;
-    document.getElementById('lbl-available-qty').innerHTML = row.children[4].innerHTML;
-    document.getElementById('lbl-fxt-id').innerHTML = row.children[0].innerHTML;
+    // console.log(e.target.className);
+    if (e.target.className == "txt-to-take") {
 
-    document.querySelectorAll('.row')[1].classList.remove("d-none");
-    document.querySelectorAll('.row')[2].classList.remove("d-none");
+    } else if (e.target.className == "equip-tbl-cell") {
+        let td = e.target;
+        let row = td.parentNode;
+        let selectedFixture = row.children[0].innerHTML;
+        console.log(selectedFixture);
+
+        document.getElementById('lbl-fxtName').innerHTML = row.children[1].innerHTML;
+        document.getElementById('lbl-storage-qty').innerHTML = row.children[3].innerHTML;
+        document.getElementById('lbl-available-qty').innerHTML = row.children[4].innerHTML;
+        document.getElementById('lbl-fxt-id').innerHTML = row.children[0].innerHTML;
+
+        document.querySelectorAll('.row')[1].classList.remove("d-none");
+        document.querySelectorAll('.row')[2].classList.remove("d-none");
+    }
+
+
+
 })
 
 //  Click Button "OK"
@@ -181,7 +190,7 @@ function loadEventEquip(id) {
     })
         .then(res => res.json())
         .then(data => {
-            fillEquipTable(data, tbl, tblBody, true);
+            fillEquipEventTable(data, tbl, tblBody);
             eventEquipObj = data;
             console.log("data:", data);
         })
@@ -194,15 +203,16 @@ function loadEventEquip(id) {
 }
 
 
-function fillEquipTable(equip, tbl, tblBody, displayEventId) {
-    console.log("fillEquipTable", equip);
+function fillEquipEventTable(equip, tbl, tblBody) {
+    console.log("fillEquipEventTable", equip);
 
     tblBody.innerHTML = "";
     for (let i = 0; i < equip.length; i++) {
 
         let row = document.createElement('tr');
-
         let cell = document.createElement("td");
+        getEventEquip(equip[i].fixture_id);
+        cell.classList.add('equip-tbl-cell');
         cell.innerHTML = equip[i].fixture_id;
         if (equip[i].fixture_id.slice(4, 7) === '000') {
             cell.innerHTML = "";
@@ -210,19 +220,20 @@ function fillEquipTable(equip, tbl, tblBody, displayEventId) {
         row.appendChild(cell);
 
         cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
         cell.innerHTML = equip[i].fixture_name;
         if (equip[i].fixture_id.slice(4, 7) === '000') {
             cell.classList.add('font-bold');
         }
         row.appendChild(cell);
 
-        if (displayEventId == true) {
-            cell = document.createElement("td");
-            cell.innerHTML = equip[i].event_id;
-            row.appendChild(cell);
-        }
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        cell.innerHTML = equip[i].event_id;
+        row.appendChild(cell);
 
         cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
         cell.innerHTML = equip[i].storage_qty;
         if (equip[i].fixture_id.slice(4, 7) === '000') {
             cell.classList.add('d-none');
@@ -230,6 +241,7 @@ function fillEquipTable(equip, tbl, tblBody, displayEventId) {
         row.appendChild(cell);
 
         cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
         cell.innerHTML = equip[i].result_qty;
         if (equip[i].fixture_id.slice(4, 7) === '000') {
             cell.classList.add('d-none');
@@ -237,50 +249,103 @@ function fillEquipTable(equip, tbl, tblBody, displayEventId) {
         row.appendChild(cell);
 
         cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
         cell.innerHTML = equip[i].selected_qty;
         if (equip[i].fixture_id.slice(4, 7) === '000') {
             cell.classList.add('d-none');
         }
         row.appendChild(cell);
 
-        if (displayEventId == true) {
-            cell = document.createElement("td");
-            if (equip[i].event_start !== null) {
-                let eventStartDate = equip[i].event_start.slice(0, 10);
-                cell.innerHTML = eventStartDate;
-            } else {
-                cell.innerHTML = "";
-            }
-
-            row.appendChild(cell);
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        if (equip[i].event_start !== null) {
+            let eventStartDate = equip[i].event_start.slice(0, 10);
+            cell.innerHTML = eventStartDate;
+        } else {
+            cell.innerHTML = "";
         }
 
-        if (displayEventId == true) {
-            cell = document.createElement("td");
-            if (equip[i].event_end !== null) {
-                let eventEndDate = equip[i].event_end.slice(0, 10);
-                cell.innerHTML = eventEndDate;
-            } else {
-                cell.innerHTML = "";
-            }
-            row.appendChild(cell);
+        row.appendChild(cell);
+
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        if (equip[i].event_end !== null) {
+            let eventEndDate = equip[i].event_end.slice(0, 10);
+            cell.innerHTML = eventEndDate;
+        } else {
+            cell.innerHTML = "";
         }
-        if (displayEventId != true) {
-            cell = document.createElement("td");
-            let newinputbox = document.createElement("input");
-            newinputbox.classList.add('txt-to-take')
-            newinputbox.value = 0;
-            newinputbox.setAttribute("type", "text");
-            cell.appendChild(newinputbox);
+        row.appendChild(cell);
 
-            // cell.innerHTML = equip[i].selected_qty;
+        tblBody.appendChild(row);
+    }
+    tbl.append(tblBody);
 
-            if (equip[i].fixture_id.slice(4, 7) === '000') {
-                cell.classList.add('d-none');
-            }
+    document.getElementById('div-equip-table').classList.remove("d-none");
+}
 
-            row.appendChild(cell);
+function fillEquipTable(equip, tbl, tblBody) {
+    console.log("fillEquipTable", equip);
+
+    tblBody.innerHTML = "";
+    for (let i = 0; i < equip.length; i++) {
+
+        let row = document.createElement('tr');
+        let cell = document.createElement("td");
+        getEventEquip(equip[i].fixture_id);
+        cell.classList.add('equip-tbl-cell');
+        cell.innerHTML = equip[i].fixture_id;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.innerHTML = "";
         }
+        row.appendChild(cell);
+
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        cell.innerHTML = equip[i].fixture_name;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('font-bold');
+        }
+        row.appendChild(cell);
+
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        cell.innerHTML = equip[i].storage_qty;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('d-none');
+        }
+        row.appendChild(cell);
+
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        cell.innerHTML = equip[i].result_qty;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('d-none');
+        }
+        row.appendChild(cell);
+
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        cell.innerHTML = equip[i].selected_qty;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('d-none');
+        }
+        row.appendChild(cell);
+
+        cell = document.createElement("td");
+        cell.classList.add('equip-tbl-cell');
+        let newinputbox = document.createElement("input");
+        newinputbox.classList.add('txt-to-take')
+        newinputbox.value = 0;
+        newinputbox.setAttribute("type", "text");
+        cell.appendChild(newinputbox);
+
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('d-none');
+        }
+
+        row.appendChild(cell);
+
 
 
         tblBody.appendChild(row);
@@ -310,11 +375,17 @@ function loadEquipment(start, end) {
         .then(res => res.json())
         .then(data => {
             console.log("data:", data);
-            fillEquipTable(data, tbl, tblBody, false)
+            fillEquipTable(data, tbl, tblBody)
         })
         // .then(refresh)
         .catch(error => {
             // enter your logic for when there is an error (ex. error toast)
             console.log(error)
         })
+}
+
+function getEventEquip(fixture_id) {
+    // let obj = eventEquipObj.find(o => o.fixture_id === fixture_id);
+
+    console.log(typeof (eventEquipObj));
 }
