@@ -205,9 +205,11 @@ function loadEventEquip(id) {
 
 function fillEquipEventTable(equip, tbl, tblBody) {
     console.log("fillEquipEventTable", equip);
-
+    eventEquipArr = equip;
     tblBody.innerHTML = "";
     for (let i = 0; i < equip.length; i++) {
+
+        // eventEquipArr.push(equip[i]);
 
         let row = document.createElement('tr');
         let cell = document.createElement("td");
@@ -282,6 +284,8 @@ function fillEquipEventTable(equip, tbl, tblBody) {
     tbl.append(tblBody);
 
     document.getElementById('div-equip-table').classList.remove("d-none");
+
+    console.log('eventEquipArr :', eventEquipArr);
 }
 
 function fillEquipTable(equip, tbl, tblBody) {
@@ -292,7 +296,7 @@ function fillEquipTable(equip, tbl, tblBody) {
 
         let row = document.createElement('tr');
         let cell = document.createElement("td");
-        getEventEquip(equip[i].fixture_id);
+
         cell.classList.add('equip-tbl-cell');
         cell.innerHTML = equip[i].fixture_id;
         if (equip[i].fixture_id.slice(4, 7) === '000') {
@@ -336,8 +340,12 @@ function fillEquipTable(equip, tbl, tblBody) {
         cell.classList.add('equip-tbl-cell');
         let newinputbox = document.createElement("input");
         newinputbox.classList.add('txt-to-take')
-        newinputbox.value = 0;
+        newinputbox.value = getEventEquip(equip[i].fixture_id);
         newinputbox.setAttribute("type", "text");
+        if (newinputbox.value > 0) {
+            row.classList.add("yellow");
+        }
+
         cell.appendChild(newinputbox);
 
         if (equip[i].fixture_id.slice(4, 7) === '000') {
@@ -384,8 +392,14 @@ function loadEquipment(start, end) {
         })
 }
 
-function getEventEquip(fixture_id) {
-    // let obj = eventEquipObj.find(o => o.fixture_id === fixture_id);
-
-    console.log(typeof (eventEquipObj));
+function getEventEquip(id) {
+    console.log(id);
+    let qty = 0;
+    for (let i = 0; i < eventEquipArr.length; i++) {
+        if (eventEquipArr[i].fixture_id === id) {
+            console.log(eventEquipArr[i].selected_qty);
+            qty = eventEquipArr[i].selected_qty;
+        }
+    }
+    return qty;
 }
