@@ -22,3 +22,15 @@
     margin-top: 5px; 
 }
 
+.font-bold{
+    font-weight: bold ;
+}
+
+.txt-to-take{
+    width: 100px;
+    text-align: center;
+    border: 0px;
+    background-color:bisque;
+    font-weight: bold ;
+}
+

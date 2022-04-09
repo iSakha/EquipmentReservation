@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", loadEvents);
 let eventObj = {};
 let equipObj = {};
+let eventEquipObj = {};
 let tbl = document.getElementById('events-table');
 
 //  Click Event table
@@ -92,6 +93,7 @@ document.getElementById('btn-ok').addEventListener('click', () => {
         .then(data => {
             // fillEquipTable(data, tbl, tblBody)
             console.log("data:", data);
+            alert('Добавлено успешно');
         })
         // .then(refresh)
         .catch(error => {
@@ -179,8 +181,9 @@ function loadEventEquip(id) {
     })
         .then(res => res.json())
         .then(data => {
-            fillEquipTable(data, tbl, tblBody)
-            // console.log("data:", data);
+            fillEquipTable(data, tbl, tblBody, true);
+            eventEquipObj = data;
+            console.log("data:", data);
         })
         // .then(refresh)
         .catch(error => {
@@ -191,7 +194,7 @@ function loadEventEquip(id) {
 }
 
 
-function fillEquipTable(equip, tbl, tblBody) {
+function fillEquipTable(equip, tbl, tblBody, displayEventId) {
     console.log("fillEquipTable", equip);
 
     tblBody.innerHTML = "";
@@ -201,49 +204,88 @@ function fillEquipTable(equip, tbl, tblBody) {
 
         let cell = document.createElement("td");
         cell.innerHTML = equip[i].fixture_id;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.innerHTML = "";
+        }
         row.appendChild(cell);
 
         cell = document.createElement("td");
         cell.innerHTML = equip[i].fixture_name;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('font-bold');
+        }
         row.appendChild(cell);
 
-        cell = document.createElement("td");
-        cell.innerHTML = equip[i].event_id;
-        row.appendChild(cell);
+        if (displayEventId == true) {
+            cell = document.createElement("td");
+            cell.innerHTML = equip[i].event_id;
+            row.appendChild(cell);
+        }
 
         cell = document.createElement("td");
         cell.innerHTML = equip[i].storage_qty;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('d-none');
+        }
         row.appendChild(cell);
 
         cell = document.createElement("td");
         cell.innerHTML = equip[i].result_qty;
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('d-none');
+        }
         row.appendChild(cell);
 
         cell = document.createElement("td");
         cell.innerHTML = equip[i].selected_qty;
-        row.appendChild(cell);
-
-        cell = document.createElement("td");
-        if (equip[i].event_start !== null) {
-            let eventStartDate = equip[i].event_start.slice(0, 10);
-            cell.innerHTML = eventStartDate;
-        }else {
-            cell.innerHTML = "";
-        }
-
-        row.appendChild(cell);
-
-
-        cell = document.createElement("td");
-        if (equip[i].event_end !== null) {
-            let eventEndDate = equip[i].event_end.slice(0, 10);
-            cell.innerHTML = eventEndDate;
-        }else {
-            cell.innerHTML = "";
+        if (equip[i].fixture_id.slice(4, 7) === '000') {
+            cell.classList.add('d-none');
         }
         row.appendChild(cell);
+
+        if (displayEventId == true) {
+            cell = document.createElement("td");
+            if (equip[i].event_start !== null) {
+                let eventStartDate = equip[i].event_start.slice(0, 10);
+                cell.innerHTML = eventStartDate;
+            } else {
+                cell.innerHTML = "";
+            }
+
+            row.appendChild(cell);
+        }
+
+        if (displayEventId == true) {
+            cell = document.createElement("td");
+            if (equip[i].event_end !== null) {
+                let eventEndDate = equip[i].event_end.slice(0, 10);
+                cell.innerHTML = eventEndDate;
+            } else {
+                cell.innerHTML = "";
+            }
+            row.appendChild(cell);
+        }
+        if (displayEventId != true) {
+            cell = document.createElement("td");
+            let newinputbox = document.createElement("input");
+            newinputbox.classList.add('txt-to-take')
+            newinputbox.value = 0;
+            newinputbox.setAttribute("type", "text");
+            cell.appendChild(newinputbox);
+
+            // cell.innerHTML = equip[i].selected_qty;
+
+            if (equip[i].fixture_id.slice(4, 7) === '000') {
+                cell.classList.add('d-none');
+            }
+
+            row.appendChild(cell);
+        }
+
 
         tblBody.appendChild(row);
+
+
     }
     tbl.append(tblBody);
 
@@ -268,7 +310,7 @@ function loadEquipment(start, end) {
         .then(res => res.json())
         .then(data => {
             console.log("data:", data);
-            fillEquipTable(data, tbl, tblBody)            
+            fillEquipTable(data, tbl, tblBody, false)
         })
         // .then(refresh)
         .catch(error => {
