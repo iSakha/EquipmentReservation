@@ -2,7 +2,9 @@ document.addEventListener("DOMContentLoaded", loadEvents);
 let eventObj = {};
 let equipObj = {};
 let eventEquipArr = [];
+let selectedEquip = [];
 let tbl = document.getElementById('events-table');
+let selectedEventId;
 
 //  Click Event table
 // ======================================================================
@@ -10,9 +12,10 @@ tbl.addEventListener('click', (e) => {
     // console.log(e.target);
     let td = e.target;
     let row = td.parentNode;
-    let selectedEventId = row.children[0].innerHTML;
+    selectedEventId = row.children[0].innerHTML;
     let start = row.children[3].innerHTML;
     let end = row.children[4].innerHTML;
+    selectedEquip = [];
 
     clearBackgroundColor(tbl);
     showAddButton();
@@ -76,15 +79,15 @@ tblEquip.addEventListener('click', (e) => {
                 console.log('new', new_value);
                 if (old_value !== new_value) {
                     tr.classList.add('pink');
+                    let fixtAddObj = {};
+                    fixtAddObj.id_fxt = fxt_id;
+                    fixtAddObj.id_event = selectedEventId
+                    fixtAddObj.qty = new_value;
+                    selectedEquip.push(fixtAddObj);
+                    txt.blur();
                 }
-
             }
-
-
         })
-
-
-
     } else if (e.target.className == "equip-tbl-cell") {
         let td = e.target;
         let row = td.parentNode;
@@ -102,6 +105,32 @@ tblEquip.addEventListener('click', (e) => {
     }
 
 })
+
+//  Click Button "Save to db"
+// ======================================================================
+document.getElementById('btn-save-db').addEventListener('click', () => {
+    console.log("selectedEquip:", selectedEquip);
+
+    fetch('/events', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedEquip)
+    })
+        .then(res => res.json())
+        .then(data => {
+            // fillEquipTable(data, tbl, tblBody)
+            console.log("data:", data);
+            // alert('Добавлено успешно');
+        })
+        // .then(refresh)
+        .catch(error => {
+            // enter your logic for when there is an error (ex. error toast)
+            console.log(error)
+        })
+});
+
 
 //  Click Button "OK"
 // ======================================================================

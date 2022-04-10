@@ -117,10 +117,16 @@ function readEquipment(interval, response) {
 //  ADD Equipment to the Event function
 // --------------------------------------------------------------------
 function addEquipmentToEvent(data, response) {
+  console.log("data to add: ", data);
+  let dataArray = [];
   connection = mysql.createConnection(config);
-  let dataArray = [data.fxt_id, data.event_id, data.fxt_qty];
-  const sql = "INSERT INTO selected_fixtures(id_fxt, id_event, qty) VALUES(?, ?, ?)";
-  connection.query(sql, dataArray, function (err, results) {
+  for(let i = 0; i < data.length; i++) {
+    dataArray.push([data[i].id_fxt, data[i].id_event, data[i].qty]);
+  }
+  
+  console.log("dataArray to add: ", dataArray);
+  const sql = "INSERT INTO selected_fixtures(id_fxt, id_event, qty) VALUES ?";
+  connection.query(sql, [dataArray], function (err, results) {
     if (err) return console.log(err);
 });
   response.send(data);
