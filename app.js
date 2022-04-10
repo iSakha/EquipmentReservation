@@ -128,7 +128,7 @@ function addEquipmentToEvent(data, response) {
   let dataArray = [];
   connection = mysql.createConnection(config);
   for (let i = 0; i < data.length; i++) {    
-    dataArray.push([data[i].qty, data[i].id_event, data[i].id_fxt]);
+    dataArray.push([data[i].id_fxt, data[i].id_event, data[i].qty]);
   }
 
   console.log("dataArray to add: ", dataArray);

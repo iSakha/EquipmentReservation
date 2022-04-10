@@ -2,9 +2,11 @@ document.addEventListener("DOMContentLoaded", loadEvents);
 let eventObj = {};
 let equipObj = {};
 let eventEquipArr = [];
-let selectedEquip = [];
+let selectedEquipAdd = [];
+let selectedEquipUpd = [];
 let tbl = document.getElementById('events-table');
 let selectedEventId;
+let interval = {};
 
 //  Click Event table
 // ======================================================================
@@ -15,10 +17,10 @@ tbl.addEventListener('click', (e) => {
     selectedEventId = row.children[0].innerHTML;
     let start = row.children[3].innerHTML;
     let end = row.children[4].innerHTML;
-    selectedEquip = [];
-
+    selectedEquipAdd = [];
+    selectedEquipUpd = [];
     clearBackgroundColor(tbl);
-    showAddButton();
+    // showAddButton();
 
     document.getElementById('event-name').innerHTML = row.children[2].innerHTML;
     document.getElementById('event-id').innerHTML = selectedEventId;
@@ -47,16 +49,6 @@ function setDate(start, end) {
     document.getElementById('end').value = end;
 }
 
-//  Click Button "Add equipment"
-// ======================================================================
-// document.getElementById('btn-add-equip').addEventListener('click', () => {
-//     document.getElementById('div-booking-equip').classList.remove("d-none");
-//     let start = document.getElementById('start').value;
-//     let end = document.getElementById('end').value;
-//     loadEquipment(start, end);
-// console.log('btn-add-equip');
-// })
-
 //  Click Equipment table
 // ======================================================================
 let tblEquip = document.getElementById('booking-equip-table');
@@ -76,17 +68,34 @@ tblEquip.addEventListener('click', (e) => {
         e.target.addEventListener('keydown', (e) => {
             if (e.keyCode == 13) {
                 new_value = txt.value;
-                console.log('new', new_value);
+                // console.log('new', new_value);
                 if (old_value !== new_value) {
                     tr.classList.add('pink');
-                    let fixtAddObj = {};
-                    fixtAddObj.id_fxt = fxt_id;
-                    fixtAddObj.id_event = selectedEventId
-                    fixtAddObj.qty = new_value;
-                    selectedEquip.push(fixtAddObj);
+                    let fixtObj = {};
+                    fixtObj.id_fxt = fxt_id;
+                    fixtObj.id_event = selectedEventId
+                    fixtObj.qty = new_value;
+                    if (old_value > 0) {
+                        selectedEquipUpd.push(fixtObj);
+                    } else selectedEquipAdd.push(fixtObj);
                     txt.blur();
                 }
             }
+        })
+
+        e.target.addEventListener('focusout', () => {
+            new_value = txt.value;
+            if (old_value !== new_value) {
+                tr.classList.add('pink');
+                let fixtObj = {};
+                fixtObj.id_fxt = fxt_id;
+                fixtObj.id_event = selectedEventId
+                fixtObj.qty = new_value;
+                if (old_value > 0) {
+                    selectedEquipUpd.push(fixtObj);
+                } else selectedEquipAdd.push(fixtObj);
+            }
+
         })
     } else if (e.target.className == "equip-tbl-cell") {
         let td = e.target;
@@ -106,90 +115,44 @@ tblEquip.addEventListener('click', (e) => {
 
 })
 
-//  Click Button "Save to db" (INSERT data)
-// ======================================================================
-// document.getElementById('btn-save-db').addEventListener('click', () => {
-//     console.log("selectedEquip:", selectedEquip);
-
-//     fetch('/events', {
-//         method: 'PUT',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(selectedEquip)
-//     })
-//         .then(res => res.json())
-//         .then(data => {
-//             // fillEquipTable(data, tbl, tblBody)
-//             console.log("data:", data);
-//             // alert('Добавлено успешно');
-//         })
-//         // .then(refresh)
-//         .catch(error => {
-//             // enter your logic for when there is an error (ex. error toast)
-//             console.log(error)
-//         })
-// });
-
 //  Click Button "Save to db" (UPDATE data)
 // ======================================================================
 document.getElementById('btn-save-db').addEventListener('click', () => {
-    console.log("selectedEquip:", selectedEquip);
+    console.log("selectedEquipAdd:", selectedEquipAdd);
+    console.log("selectedEquipUpd:", selectedEquipUpd);
 
-    fetch('/events', {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedEquip)
-    })
-        .then(res => res.json())
-        .then(data => {
-            // fillEquipTable(data, tbl, tblBody)
-            console.log("data:", data);
-            // alert('Добавлено успешно');
-        })
-        // .then(refresh)
-        .catch(error => {
-            // enter your logic for when there is an error (ex. error toast)
-            console.log(error)
-        })
+    removeDoubles(selectedEquipAdd);
+    removeDoubles(selectedEquipUpd);
+
+    console.log("after remove selectedEquipAdd:", selectedEquipAdd);
+    console.log("after remove selectedEquipUpd:", selectedEquipUpd);
+
+    switch (selectedEquipUpd.length) {
+        case 0:
+            switch (selectedEquipAdd.length) {
+                case 0:
+                    break;
+                default:
+                    console.log("addSelectedEquipToDB");
+                    addSelectedEquipToDB();
+                    break;
+            }
+            break;
+        default: switch (selectedEquipAdd.length) {
+            case 0:
+                console.log("updateSelectedEquipToDB");
+                updateSelectedEquipToDB();
+                break;
+            default:
+                console.log("addThenUpdateSelectedEquipToDB");
+                addThenUpdateSelectedEquipToDB();
+                break;
+        }
+            break;
+    }
+
 });
 
-
-//  Click Button "OK"
-// ======================================================================
-document.getElementById('btn-ok').addEventListener('click', () => {
-    let fxt_qty = document.getElementById('txt-take-qty').value;
-    let event_id = document.getElementById('event-id').innerHTML;
-    let fxt_id = document.getElementById('lbl-fxt-id').innerHTML;
-    let fxtObj = {};
-    fxtObj.event_id = event_id;
-    fxtObj.fxt_id = fxt_id;
-    fxtObj.fxt_qty = fxt_qty;
-    // console.log(fxtObj);
-
-    fetch('/events', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(fxtObj)
-    })
-        .then(res => res.json())
-        .then(data => {
-            // fillEquipTable(data, tbl, tblBody)
-            console.log("data:", data);
-            alert('Добавлено успешно');
-        })
-        // .then(refresh)
-        .catch(error => {
-            // enter your logic for when there is an error (ex. error toast)
-            console.log(error)
-        })
-
-
-})
 
 function getSelectedEventEquip() {
 
@@ -455,7 +418,7 @@ function fillEquipTable(equip, tbl, tblBody) {
 function loadEquipment(start, end) {
     let tbl = document.getElementById('booking-equip-table');
     let tblBody = document.getElementById('booking-equip-table-body');
-    let interval = {};
+    interval = {};
     interval.start = start;
     interval.end = end;
 
@@ -489,4 +452,81 @@ function getEventEquip(id) {
         }
     }
     return qty;
+}
+
+
+//  Query functions (ADD, UPDATE, ADD then UPDATE)
+// --------------------------------------------------------------------
+function addSelectedEquipToDB() {
+    console.log("addSelectedEquipToDB");
+    fetch('/events', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedEquipAdd)
+    })
+        .then(res => res.json())
+        .then(data => {
+            // fillEquipTable(data, tbl, tblBody)
+            console.log("data:", data);
+            // alert('Добавлено успешно');
+        })
+        .then(loadEventEquip(selectedEventId))
+        .catch(error => {
+            // enter your logic for when there is an error (ex. error toast)
+            console.log(error)
+        })
+}
+
+function updateSelectedEquipToDB() {
+    fetch('/events', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedEquipUpd)
+    })
+        .then(res => res.json())
+        .then(data => {
+            // fillEquipTable(data, tbl, tblBody)
+            console.log("data:", data);
+            // alert('Добавлено успешно');
+        })
+        .then(loadEventEquip(selectedEventId))
+        .catch(error => {
+            // enter your logic for when there is an error (ex. error toast)
+            console.log(error)
+        })
+}
+
+function addThenUpdateSelectedEquipToDB() {
+    fetch('/events', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedEquipAdd)
+    })
+        .then(res => res.json())
+        .then(data => {
+            // fillEquipTable(data, tbl, tblBody)
+            console.log("data:", data);
+            // alert('Добавлено успешно');
+        })
+        .then(updateSelectedEquipToDB)
+        .then(loadEventEquip(selectedEventId))
+        .catch(error => {
+            // enter your logic for when there is an error (ex. error toast)
+            console.log(error)
+        })
+}
+
+function removeDoubles(arrObj) {
+    // const arr = [{id: 1, name: 'one'}, {id: 2, name: 'two'}, {id: 1, name: 'one'}]
+    console.log('arrObj', arrObj);
+const ids = arrObj.map(o => o.id_fxt)
+const filtered = arrObj.filter(({id_fxt}, index) => !ids.includes(id_fxt, index + 1));
+
+console.log('filtered', filtered);
 }
