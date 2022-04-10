@@ -106,13 +106,38 @@ tblEquip.addEventListener('click', (e) => {
 
 })
 
-//  Click Button "Save to db"
+//  Click Button "Save to db" (INSERT data)
+// ======================================================================
+// document.getElementById('btn-save-db').addEventListener('click', () => {
+//     console.log("selectedEquip:", selectedEquip);
+
+//     fetch('/events', {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(selectedEquip)
+//     })
+//         .then(res => res.json())
+//         .then(data => {
+//             // fillEquipTable(data, tbl, tblBody)
+//             console.log("data:", data);
+//             // alert('Добавлено успешно');
+//         })
+//         // .then(refresh)
+//         .catch(error => {
+//             // enter your logic for when there is an error (ex. error toast)
+//             console.log(error)
+//         })
+// });
+
+//  Click Button "Save to db" (UPDATE data)
 // ======================================================================
 document.getElementById('btn-save-db').addEventListener('click', () => {
     console.log("selectedEquip:", selectedEquip);
 
     fetch('/events', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },

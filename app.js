@@ -55,7 +55,14 @@ app.put("/events", urlencodedParser, function (request, response) {
   // response.send(request.body);
 });
 
-
+//  UPDATE Equipment to the Event
+// --------------------------------------------------------------------
+app.patch("/events", urlencodedParser, function (request, response) {
+  if (!request.body) return response.sendStatus(400);
+  console.log("request.body", request.body);
+  return updateEquipmentToEvent(request.body, response);
+  // response.send(request.body);
+});
 
 
 //  READ events function
@@ -100,7 +107,7 @@ function readEventEquipment(data, response) {
 function readEquipment(interval, response) {
   connection = mysql.createConnection(config);
   connection.execute("CALL equip_selection(?,?)",
-  [interval.start, interval.end],
+    [interval.start, interval.end],
     function (err, results, fields) {
       if (err) {
         console.log('Check SSH tunnel!')
@@ -120,18 +127,39 @@ function addEquipmentToEvent(data, response) {
   console.log("data to add: ", data);
   let dataArray = [];
   connection = mysql.createConnection(config);
-  for(let i = 0; i < data.length; i++) {
-    dataArray.push([data[i].id_fxt, data[i].id_event, data[i].qty]);
+  for (let i = 0; i < data.length; i++) {    
+    dataArray.push([data[i].qty, data[i].id_event, data[i].id_fxt]);
   }
-  
+
   console.log("dataArray to add: ", dataArray);
   const sql = "INSERT INTO selected_fixtures(id_fxt, id_event, qty) VALUES ?";
   connection.query(sql, [dataArray], function (err, results) {
     if (err) return console.log(err);
-});
+  });
   response.send(data);
   connection.end();
 }
+
+//  UPDATE Equipment to the Event function
+// --------------------------------------------------------------------
+function updateEquipmentToEvent(data, response) {
+  console.log("data to update: ", data);
+  let dataArray = [];
+  connection = mysql.createConnection(config);
+  for (let i = 0; i < data.length; i++) {
+    dataArray = [data[i].qty, data[i].id_event, data[i].id_fxt];
+    // console.log("dataArray to update: ", dataArray);
+    const sql = "UPDATE selected_fixtures SET qty=? WHERE id_event=? AND id_fxt=?";
+    connection.query(sql, dataArray, function (err, results) {
+      if (err) return console.log(err);
+    }
+
+    )
+  };
+  response.send(data);
+  connection.end();
+}
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
