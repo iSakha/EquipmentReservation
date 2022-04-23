@@ -3,7 +3,7 @@ const mysql = require("mysql2");
 const config = require('./config.js');
 const cors = require("cors");
 
-const PORT = 3060;
+const PORT = 3080;
 const app = express();
 
 app.use(cors());
